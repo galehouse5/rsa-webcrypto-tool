@@ -2,43 +2,43 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>RSA Encrypt Text</title>
+        <title>RSA Encrypt File</title>
         <link rel="stylesheet" href="styles/main.css" />
     </head>
 
     <body>
         <nav>
             <a href="generate-keys.html">Generate Keys</a>
-            <a class="selected" href="encrypt-text.html">Encrypt Text</a>
+            <a href="encrypt-text.html">Encrypt Text</a>
             <a href="decrypt-text.html">Decrypt Text</a>
-            <a href="encrypt-file.html">Encrypt File</a>
+            <a class="selected" href="encrypt-file.html">Encrypt File</a>
             <a href="decrypt-file.html">Decrypt File</a>
         </nav>
 
         <div class="page">
-            <h1>RSA Encrypt Text</h1>
+            <h1>RSA Encrypt File</h1>
             <p class="header-description">
                 Your keys and data are kept confidential by performing cryptographic operations in your web browser using the
-                <a href="https://www.w3.org/TR/WebCryptoAPI/" target="Web Cryptography API">Web Cryptography API</a>.
+                <a href="https://www.w3.org/TR/WebCryptoAPI/" target="Web Web Cryptography API">Web Cryptography API</a>.
                 JavaScript is left unminified so that you can more easily scrutinize the trustworthiness of this tool.
             </p>
 
             <div class="field">
                 <label for="public-key">RSA Public Key</label>
-                <textarea id="public-key" rows="10"></textarea>
+                <textarea id="public-key" rows=10></textarea>
             </div>
 
             <div class="field">
-                <label for="text-to-encrypt">Text to Encrypt</label>
-                <textarea id="text-to-encrypt" rows="10"></textarea>
+                <label for="file-to-encrypt">File to Encrypt</label>
+                <input id="file-to-encrypt" type="file"></input>
             </div>
 
-            <button id="button">Encrypt Text</button>
+            <button id="button">Encrypt File</button>
             <div id="message"></div>
 
-            <div class="field">
-                <label for="encrypted-text">Encrypted Text</label>
-                <textarea id="encrypted-text" rows="10"></textarea>
+            <div class="field" style="display: none;">
+                <label for="encrypted-file">Encrypted File</label>
+                <a id="encrypted-file"></a>
             </div>
         </div>
     </body>
@@ -48,13 +48,19 @@
     <script>
         (function () {
             var publicKey = document.getElementById("public-key");
-            var textToEncrypt = document.getElementById("text-to-encrypt");
+            var fileToEncrypt = document.getElementById("file-to-encrypt");
             var button = document.getElementById("button");
             var message = document.getElementById("message");
-            var encryptedText = document.getElementById("encrypted-text");
+            var encryptedFile = document.getElementById("encrypted-file");
 
             var success = function (data) {
-                encryptedText.value = arrayBufferToPem(data, "RSA TEXT");
+                var unencryptedFile = fileToEncrypt.files[0];
+
+                encryptedFile.href = window.URL.createObjectURL(new Blob([data]));
+                encryptedFile.download = encryptedFile.innerText
+                    = unencryptedFile.name + ".encrypted";
+                encryptedFile.parentNode.style.display = "block";
+
                 message.innerText = null;
                 button.disabled = false;
             };
@@ -75,12 +81,14 @@
                 try { publicKeyArrayBuffer = pemToArrayBuffer(publicKey.value.trim()); }
                 catch (_) { return error("Public key is invalid."); }
 
-                if (textToEncrypt.value.trim() === "")
-                    return error("Text to encrypt must be specified.");
+                if (!fileToEncrypt.files.length)
+                    return error("You must select a file to encrypt.");
 
-                var data = new TextEncoder().encode(textToEncrypt.value);
-
-                rsaEncrypt(data, publicKeyArrayBuffer).then(success, error);
+                var fileReader = new FileReader();
+                fileReader.onload = function () {
+                    rsaEncrypt(this.result, publicKeyArrayBuffer).then(success, error);
+                };
+                fileReader.readAsArrayBuffer(fileToEncrypt.files[0]);
             }; 
 
             button.addEventListener("click", process);
