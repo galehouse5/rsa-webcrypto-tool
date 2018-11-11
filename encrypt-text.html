@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="utf-8" />
@@ -70,7 +71,7 @@
 
                 var publicKeyArrayBuffer = null;
                 try { publicKeyArrayBuffer = pemToArrayBuffer(publicKey.value.trim()); }
-                catch { return error("Public key is invalid."); }
+                catch (error) { return error("Public key is invalid."); }
 
                 if (decryptedText.value.trim() === "")
                     return error("Text to encrypt must be specified.");

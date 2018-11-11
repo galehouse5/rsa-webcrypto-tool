@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="utf-8" />
@@ -70,14 +71,14 @@
 
                 var privateKeyArrayBuffer = null;
                 try { privateKeyArrayBuffer = pemToArrayBuffer(privateKey.value.trim()); }
-                catch { return error("Private key is invalid."); }
+                catch (error) { return error("Private key is invalid."); }
 
                 if (encryptedText.value.trim() === "")
                     return error("Text to decrypt must be specified.");
 
                 var data = null;
                 try { data = pemToArrayBuffer(encryptedText.value.trim()); }
-                catch { return error("Encrypted text is invalid."); }
+                catch (error) { return error("Encrypted text is invalid."); }
 
                 rsaDecrypt(data, privateKeyArrayBuffer).then(success, error);
             };

@@ -45,8 +45,8 @@
             var message = document.getElementById("message");
 
             var success = function (keys) {
-                publicKey.innerText = arrayBufferToPem(keys.publicKeyBuffer, "RSA PUBLIC KEY");
-                privateKey.innerText = arrayBufferToPem(keys.privateKeyBuffer, "RSA PRIVATE KEY");
+                publicKey.value = arrayBufferToPem(keys.publicKeyBuffer, "RSA PUBLIC KEY");
+                privateKey.value = arrayBufferToPem(keys.privateKeyBuffer, "RSA PRIVATE KEY");
                 message.innerText = null;
                 button.disabled = false;
             };
