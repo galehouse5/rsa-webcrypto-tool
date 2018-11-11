@@ -1,0 +1,86 @@
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>RSA Encrypt Text</title>
+        <link rel="stylesheet" href="styles/main.css" />
+    </head>
+
+    <body>
+        <nav>
+            <a href="generate-keys.html">Generate Keys</a>
+            <a class="selected" href="encrypt-text.html">Encrypt Text</a>
+            <a href="decrypt-text.html">Decrypt Text</a>
+        </nav>
+
+        <div class="page">
+            <h1>RSA Encrypt Text</h1>
+            <p class="header-description">
+                Your keys and data are kept confidential by performing cryptographic operations in your web browser using the
+                <a href="https://www.w3.org/TR/WebCryptoAPI/" target="Web Cryptography API">Web Cryptography API</a>.
+                JavaScript is left unminified so that you can more easily scrutinize the trustworthiness of this tool.
+            </p>
+
+            <div class="field">
+                <label for="public-key">RSA Public Key</label>
+                <textarea id="public-key" rows="10"></textarea>
+            </div>
+
+            <div class="field">
+                <label for="decrypted-text">Text to Encrypt</label>
+                <textarea id="decrypted-text" rows="10"></textarea>
+            </div>
+
+            <button id="button">Encrypt Text</button>
+            <div id="message"></div>
+
+            <div class="field">
+                <label for="encrypted-text">Encrypted Text</label>
+                <textarea id="encrypted-text" rows="10"></textarea>
+            </div>
+        </div>
+    </body>
+
+    <script src="scripts/encoding-helper.js"></script>
+    <script src="scripts/encryption-helper.js"></script>
+    <script>
+        (function () {
+            var publicKey = document.getElementById("public-key");
+            var decryptedText = document.getElementById("decrypted-text");
+            var button = document.getElementById("button");
+            var message = document.getElementById("message");
+            var encryptedText = document.getElementById("encrypted-text");
+
+            var success = function (data) {
+                encryptedText.value = arrayBufferToPem(data, "RSA TEXT");
+                message.innerText = null;
+                button.disabled = false;
+            };
+
+            var error = function (error) {
+                message.innerText = error;
+                button.disabled = false;
+            };
+
+            var process = function () {
+                message.innerText = "Processing...";
+                button.disabled = true;
+
+                if (publicKey.value.trim() === "")
+                    return error("Public key must be specified.");
+
+                var publicKeyArrayBuffer = null;
+                try { publicKeyArrayBuffer = pemToArrayBuffer(publicKey.value.trim()); }
+                catch { return error("Public key is invalid."); }
+
+                if (decryptedText.value.trim() === "")
+                    return error("Text to encrypt must be specified.");
+
+                var data = new TextEncoder().encode(decryptedText.value);
+
+                rsaEncrypt(data, publicKeyArrayBuffer).then(success, error);
+            }; 
+
+            button.addEventListener("click", process);
+        })();
+    </script>
+</html>
