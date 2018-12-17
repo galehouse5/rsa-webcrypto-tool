@@ -66,7 +66,13 @@
                 generateRsaKeys().then(success, error);
             };
 
+            var warn = function () {
+                if (privateKey.value === "") return;
+                return "Are you sure? Your keys will be lost unless you've saved them.";
+            };
+
             button.addEventListener("click", process);
+            window.onbeforeunload = warn;
         })();
     </script>
 </html>
