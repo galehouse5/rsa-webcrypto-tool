@@ -18,10 +18,9 @@
         <div class="page">
             <h1>RSA Decrypt Text</h1>
             <p class="header-description">
-                Your keys and data are kept confidential by performing all cryptographic operations in your web browser, using the
-                <a href="https://www.w3.org/TR/WebCryptoAPI/" target="Web Crypto API">Web Crypto API</a>.
-                JavaScript is left unminified so you can view page source and scrutinize the source code for yourself. Full source code is viewable at:
-                <a href="https://github.com/galehouse5/rsa-webcrypto-tool" target="Source Code">https://github.com/galehouse5/rsa-webcrypto-tool</a>.
+                Your keys and data are kept confidential by running cryptography operations in your browser using
+                <a href="https://www.w3.org/TR/WebCryptoAPI/" target="Web Crypto API">Web Crypto API</a> and
+                JavaScript is left unminified so you can verify page source.
             </p>
 
             <div class="field">
@@ -37,11 +36,16 @@
             <button id="button">Decrypt Text</button>
             <div id="message"></div>
 
-            <div class="field">
+            <div id="result" class="field">
                 <label for="decrypted-text">Decrypted Text</label>
-                <textarea id="decrypted-text" rows="10"></textarea>
+                <a id="decrypted-download" class="download" download="decrypted.txt">decrypted.txt</a>
+                <textarea id="decrypted-text" rows="10" readonly></textarea>
             </div>
         </div>
+
+        <footer>
+            <p>Source code: <a href="https://github.com/galehouse5/rsa-webcrypto-tool">https://github.com/galehouse5/rsa-webcrypto-tool</a></p>
+        </footer>
     </body>
 
     <script src="scripts/encoding-helper.js"></script>
@@ -53,9 +57,14 @@
             var button = document.getElementById("button");
             var message = document.getElementById("message");
             var decryptedText = document.getElementById("decrypted-text");
+            var decryptedDownload = document.getElementById("decrypted-download");
+            var result = document.getElementById("result");
 
             var success = function (data) {
                 decryptedText.value = new TextDecoder().decode(data);
+                decryptedDownload.href = window.URL.createObjectURL(
+                    new Blob([decryptedText.value], { type: "text/plain" }));
+                result.style.display = "block";
                 message.innerText = null;
                 button.disabled = false;
             };

@@ -18,10 +18,9 @@
         <div class="page">
             <h1>RSA Decrypt File</h1>
             <p class="header-description">
-                Your keys and data are kept confidential by performing all cryptographic operations in your web browser, using the
-                <a href="https://www.w3.org/TR/WebCryptoAPI/" target="Web Crypto API">Web Crypto API</a>.
-                JavaScript is left unminified so you can view page source and scrutinize the source code for yourself. Full source code is viewable at:
-                <a href="https://github.com/galehouse5/rsa-webcrypto-tool" target="Source Code">https://github.com/galehouse5/rsa-webcrypto-tool</a>.
+                Your keys and data are kept confidential by running cryptography operations in your browser using
+                <a href="https://www.w3.org/TR/WebCryptoAPI/" target="Web Crypto API">Web Crypto API</a> and
+                JavaScript is left unminified so you can verify page source.
             </p>
 
             <div class="field">
@@ -37,11 +36,15 @@
             <button id="button">Decrypt File</button>
             <div id="message"></div>
 
-            <div class="field" style="display: none;">
+            <div id="result" class="field" style="display: none;">
                 <label for="decrypted-file">Decrypted File</label>
-                <a id="decrypted-file"></a>
+                <div><a id="decrypted-file"></a></div>
             </div>
         </div>
+
+        <footer>
+            <p>Source code: <a href="https://github.com/galehouse5/rsa-webcrypto-tool">https://github.com/galehouse5/rsa-webcrypto-tool</a></p>
+        </footer>
     </body>
 
     <script src="scripts/encoding-helper.js"></script>
@@ -53,14 +56,16 @@
             var button = document.getElementById("button");
             var message = document.getElementById("message");
             var decryptedFile = document.getElementById("decrypted-file");
+            var result = document.getElementById("result");
 
             var success = function (data) {
                 var encryptedFile2 = encryptedFile.files[0];
 
-                decryptedFile.href = window.URL.createObjectURL(new Blob([data]));
+                decryptedFile.href = window.URL.createObjectURL(
+                    new Blob([data], { type: "application/octet-stream" }));
                 decryptedFile.download = decryptedFile.innerText
                     = encryptedFile2.name.replace(".encrypted", "");
-                decryptedFile.parentNode.style.display = "block";
+                result.style.display = "block";
 
                 message.innerText = null;
                 button.disabled = false;

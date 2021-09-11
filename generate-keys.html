@@ -18,39 +18,54 @@
         <div class="page">
             <h1>Generate RSA Keys</h1>
             <p class="header-description">
-                Your keys and data are kept confidential by performing all cryptographic operations in your web browser, using the
-                <a href="https://www.w3.org/TR/WebCryptoAPI/" target="Web Crypto API">Web Crypto API</a>.
-                JavaScript is left unminified so you can view page source and scrutinize the source code for yourself. Full source code is viewable at:
-                <a href="https://github.com/galehouse5/rsa-webcrypto-tool" target="Source Code">https://github.com/galehouse5/rsa-webcrypto-tool</a>.
+                Your keys and data are kept confidential by running cryptography operations in your browser using
+                <a href="https://www.w3.org/TR/WebCryptoAPI/" target="Web Crypto API">Web Crypto API</a> and
+                JavaScript is left unminified so you can verify page source.
             </p>
-
-            <div class="field">
-                <label for="public-key">RSA Public Key</label>
-                <textarea id="public-key" rows="10"></textarea>
-            </div>
-
-            <div class="field">
-                <label for="private-key">RSA Private Key</label>
-                <textarea id="private-key" rows="10"></textarea>
-            </div>
 
             <button id="button">Generate Keys</button>
             <div id="message"></div>
+            
+            <div id="result">
+                <div class="field">
+                    <label for="public-key">RSA Public Key</label>
+                    <a id="public-key-download" class="download" download="id_rsa.pub">id_rsa.pub</a>
+                    <textarea id="public-key-text" rows="10" readonly></textarea>
+                </div>
+
+                <div class="field">
+                    <label for="private-key">RSA Private Key</label>
+                    <a id="private-key-download" class="download" download="id_rsa">id_rsa</a>
+                    <textarea id="private-key-text" rows="10" readonly></textarea>
+                </div>
+            </div>
         </div>
+
+        <footer>
+            <p>Source code: <a href="https://github.com/galehouse5/rsa-webcrypto-tool">https://github.com/galehouse5/rsa-webcrypto-tool</a></p>
+        </footer>
     </body>
 
     <script src="scripts/encoding-helper.js"></script>
     <script src="scripts/encryption-helper.js"></script>
     <script>
         (function () {
-            var publicKey = document.getElementById("public-key");
-            var privateKey = document.getElementById("private-key");
+            var publicKeyText = document.getElementById("public-key-text");
+            var publicKeyDownload = document.getElementById("public-key-download");
+            var privateKeyText = document.getElementById("private-key-text");
+            var privateKeyDownload = document.getElementById("private-key-download");
             var button = document.getElementById("button");
             var message = document.getElementById("message");
+            var result = document.getElementById("result");
 
             var success = function (keys) {
-                publicKey.value = arrayBufferToPem(keys.publicKeyBuffer, "RSA PUBLIC KEY");
-                privateKey.value = arrayBufferToPem(keys.privateKeyBuffer, "RSA PRIVATE KEY");
+                publicKeyText.value = arrayBufferToPem(keys.publicKeyBuffer, "RSA PUBLIC KEY");
+                publicKeyDownload.href = window.URL.createObjectURL(
+                    new Blob([publicKeyText.value], { type: "application/octet-stream" }));
+                privateKeyText.value = arrayBufferToPem(keys.privateKeyBuffer, "RSA PRIVATE KEY");
+                privateKeyDownload.href = window.URL.createObjectURL(
+                    new Blob([privateKeyText.value], { type: "application/octet-stream" }));
+                result.style.display = "block";
                 message.innerText = null;
                 button.disabled = false;
             };

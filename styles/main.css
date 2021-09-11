@@ -1,11 +1,10 @@
-html {
-    background-color: #252525;
-    color: #adadad;
-    font-family: sans-serif;
+* {
+    font-family: Consolas, monospace;
 }
 
 body {
-    background-color: #333333;
+    color: #fff;
+    background-color: #252525;
     font-size: 18px;
     margin: 30px 30px 0;
 }
@@ -15,21 +14,26 @@ body {
 }
 
 .field > label {
-    display: block;
+    display: inline-block;
     margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.field > .download {
+    float: right;
 }
 
 input, textarea {
     background-color: #252525;
     width: 100%;
-    color: #adadad;
+    color: #fff;
 }
 
 button, input[type=file] {
     padding: 10px;
     font-size: 20px;
     background-color: #252525;
-    color: #adadad;
+    color: #fff;
 }
 
 .header-description {
@@ -52,13 +56,23 @@ nav > a {
 }
 
 nav > a.selected {
-    background-color: #333333;
+    background-color: #333;
 }
 
 .page {
     padding: 30px;
+    background-color: #333;
 }
 
 a {
-    color: #adadad;
+    color: #fff;
+}
+
+footer {
+    margin: 15px;
+    background-color: #252525;
+}
+
+#result {
+    display: none;
 }
